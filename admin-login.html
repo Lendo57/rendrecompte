@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: black;
+      color: #00FF55;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      width: 80%;
+      max-width: 500px;
+    }
+    .form-input {
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      border: 2px solid #00FF55;
+      background-color: black;
+      color: #00FF55;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #00FF77;
+    }
+    .button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-top: 10px;
+      border: 2px solid #00FF55;
+      background-color: black;
+      color: #00FF55;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #00FF55;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Login</h1>
+    <form id="admin-login-form">
+      <input type="password" id="admin-password" class="form-input" placeholder="Enter Admin Password" required />
+      <button type="submit" class="button">Login</button>
+    </form>
+  </div>
+
+  <script>
+    // Admin login credentials (change this to your secure password logic)
+    const validPassword = 'admin123'; // Placeholder password, should be handled securely
+
+    // Handle form submission
+    document.getElementById('admin-login-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const password = document.getElementById('admin-password').value;
+
+      // Check if the password matches
+      if (password === validPassword) {
+        // Set admin status in localStorage
+        localStorage.setItem('isAdmin', 'true');
+        // Redirect to the admin panel
+        window.location.href = 'admin-panel.html'; // Now redirects to admin panel
+      } else {
+        alert('Incorrect password! Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aujourd'hui</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .content-item {
+      margin-bottom: 40px;
+      text-align: left;
+      border-bottom: 2px solid #00FF55;
+      padding-bottom: 20px;
+    }
+    .image-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 100px;
+    }
+    .content-item img {
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .content-item .date {
+      color: #00FF55;
+      opacity: 0.7;
+      font-style: italic;
+      margin-top: 30px;
+    }
+    .content-item h2 {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Aujourd'hui</h1>
+    <div id="content-list"></div>
+  </div>
+  <script>
+    function displayContent() {
+      const contentList = JSON.parse(localStorage.getItem('contentList')) || [];
+      const contentContainer = document.getElementById('content-list');
+      
+      if (contentList.length === 0) {
+        contentContainer.innerHTML = '<p>No content available.</p>';
+        return;
+      }
+      const post = contentList[0];
+      contentContainer.innerHTML = `
+        <div class="content-item">
+          ${post.image ? `
+            <div class="image-container">
+              <img src="${post.image}" alt="${post.title}">
+            </div>
+          ` : ''}
+          <p class="date">${post.date}</p>
+          <h2>${post.title}</h2>
+          ${post.subtitle ? `<h3>${post.subtitle}</h3>` : ''}
+          <p>${post.content}</p>
+        </div>
+      `;
+    }
+    window.onload = displayContent;
+  </script>
+</body>
+</html>

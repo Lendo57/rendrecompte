@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribe for Notifications</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: black;
+      color: #00FF55;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .subscribe-container {
+      text-align: center;
+    }
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      margin-top: 10px;
+      border: 2px solid #00FF55;
+      background-color: black;
+      color: #00FF55;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-top: 20px;
+      border: 2px solid #00FF55;
+      background-color: black;
+      color: #00FF55;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #00FF55;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="subscribe-container">
+    <h1>Recevoir des notifications</h1>
+    <p>Entrez votre adresse email pour être notifié lors de la prochaine mise à jour du site.</p>
+    <input type="email" id="email" placeholder="Votre adresse email" autocomplete="email">
+    <br>
+    <button onclick="subscribe()">S'abonner</button>
+  </div>
+
+  <script>
+    function subscribe() {
+      const email = document.getElementById('email').value.trim();
+      if (email) {
+        // Save the email in local storage (for demonstration purposes)
+        let subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+        subscribers.push(email);
+        localStorage.setItem('subscribers', JSON.stringify(subscribers));
+
+        alert('Merci ! Vous serez notifié par email lors de la prochaine mise à jour.');
+        window.location.href = 'index.html'; // Redirect to the main page
+      } else {
+        alert('Veuillez entrer une adresse email valide.');
+      }
+    }
+  </script>
+</body>
+</html>

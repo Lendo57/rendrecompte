@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archive</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .container {
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .archive-container {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+      padding: 10px 40px;
+    }
+
+    .post-tile {
+      border: 1px solid #00FF55;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-tile:hover {
+      transform: translateY(-3px);
+    }
+
+    .post-tile img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 5px;
+    }
+
+    .post-tile h2 {
+      font-size: 0.9rem;
+      margin: 5px 0;
+      line-height: 1.2;
+    }
+
+    .post-tile .date {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-bottom: 5px;
+    }
+
+    .post-tile .preview {
+      font-size: 0.8rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: #00FF55;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 10px;
+      z-index: 2;
+    }
+
+    .nav-arrow:hover {
+      opacity: 0.8;
+    }
+
+    .nav-prev { left: 0; }
+    .nav-next { right: 0; }
+
+    .selected-post {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 80vh;
+      background: black;
+      border: 2px solid #00FF55;
+      padding: 40px;
+      z-index: 10;
+    }
+
+    #post-content {
+      max-width: 600px;
+      margin: 0 auto;
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 20px;
+    }
+
+    .selected-post img {
+      max-width: 300px;
+      width: 100%;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .selected-post .date {
+      opacity: 0.7;
+      font-style: italic;
+      margin-top: 20px;
+    }
+
+    .close-post {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      color: #00FF55;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    #post-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #post-content::-webkit-scrollbar-track {
+      background: black;
+    }
+
+    #post-content::-webkit-scrollbar-thumb {
+      background: #00FF55;
+    }
+
+    @media (max-width: 768px) {
+      .archive-grid {
+        grid-template-columns: 1fr;
+        padding: 10px 20px;
+      }
+
+      .post-tile {
+        min-height: 150px;
+      }
+
+      .selected-post {
+        width: 100%;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        transform: none;
+      }
+
+      .nav-arrow {
+        font-size: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Archive</h1>
+    <div class="archive-container">
+      <button class="nav-arrow nav-prev" onclick="prevPage()">←</button>
+      <button class="nav-arrow nav-next" onclick="nextPage()">→</button>
+      <div id="archive-grid" class="archive-grid"></div>
+    </div>
+  </div>
+
+  <div id="selected-post" class="selected-post" style="display: none;">
+    <button class="close-post" onclick="closePost()">×</button>
+    <div id="post-content"></div>
+  </div>
+
+  <script>
+    let currentPage = 0;
+    const postsPerPage = 6;
+    let archivedPosts = [];
+
+    function createPostTile(post, index) {
+      const preview = post.content.substring(0, 60) + '...';
+      return `
+        <div class="post-tile" onclick="viewPost(${index + 1})">
+          ${post.image ? `<img src="${post.image}" alt="${post.title}">` : ''}
+          <p class="date">${post.date}</p>
+          <h2>${post.title}</h2>
+          <p class="preview">${preview}</p>
+        </div>
+      `;
+    }
+
+    function displayCurrentPage() {
+      const startIndex = currentPage * postsPerPage;
+      const pageItems = archivedPosts.slice(startIndex, startIndex + postsPerPage);
+      const archiveGrid = document.getElementById('archive-grid');
+      
+      archiveGrid.innerHTML = pageItems.map((post, index) => 
+        createPostTile(post, startIndex + index)
+      ).join('');
+
+      document.querySelector('.nav-prev').style.visibility = currentPage > 0 ? 'visible' : 'hidden';
+      document.querySelector('.nav-next').style.visibility = 
+        (currentPage + 1) * postsPerPage < archivedPosts.length ? 'visible' : 'hidden';
+    }
+
+    function displayArchive() {
+      const contentList = JSON.parse(localStorage.getItem('contentList')) || [];
+      archivedPosts = contentList.slice(1);
+      
+      if (archivedPosts.length === 0) {
+        document.getElementById('archive-grid').innerHTML = 
+          '<p style="text-align: center; grid-column: 1/-1;">No archived content available.</p>';
+        return;
+      }
+
+      displayCurrentPage();
+    }
+
+    function nextPage() {
+      if ((currentPage + 1) * postsPerPage < archivedPosts.length) {
+        currentPage++;
+        displayCurrentPage();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        displayCurrentPage();
+      }
+    }
+
+    function viewPost(index) {
+      const contentList = JSON.parse(localStorage.getItem('contentList')) || [];
+      const post = contentList[index];
+      const postContent = document.getElementById('post-content');
+      
+      postContent.innerHTML = `
+        ${post.image ? `<img src="${post.image}" alt="${post.title}">` : ''}
+        <p class="date">${post.date}</p>
+        <h2>${post.title}</h2>
+        ${post.subtitle ? `<h3>${post.subtitle}</h3>` : ''}
+        <p>${post.content}</p>
+      `;
+
+      document.getElementById('selected-post').style.display = 'block';
+    }
+
+    function closePost() {
+      document.getElementById('selected-post').style.display = 'none';
+    }
+
+    window.onload = displayArchive;
+  </script>
+</body>
+</html>

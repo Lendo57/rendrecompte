@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visiteurs</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: black;
+      color: #00FF55;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      text-align: center;
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 20px;
+      position: relative;
+    }
+    .visitors-list {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .visitor-item {
+      padding: 10px;
+      border-bottom: 1px solid #00FF55;
+    }
+    .visitor-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Visiteurs</h1>
+    <div class="visitors-list" id="visitors-list">
+      <!-- List of visitors will be dynamically added here -->
+    </div>
+  </div>
+  <script>
+    let visitors = JSON.parse(localStorage.getItem('visitors')) || [];
+    
+    function displayVisitors() {
+      const visitorsList = document.getElementById('visitors-list');
+      visitorsList.innerHTML = '';
+      visitors.sort((a, b) => new Date(a.date) - new Date(b.date));
+      visitors.forEach(visitor => {
+        const visitorItem = document.createElement('div');
+        visitorItem.className = 'visitor-item';
+        visitorItem.textContent = `${visitor.username} - ${new Date(visitor.date).toLocaleString()}`;
+        visitorsList.appendChild(visitorItem);
+      });
+    }
+
+    displayVisitors();
+    localStorage.setItem('activePage', 'visitors');
+  </script>
+</body>
+</html>

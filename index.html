@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rendre compte</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Rendre compte</h1>
+    <div class="timer" id="timer">05:00</div>
+    <div class="button" id="today-button" onclick="window.location.href='today.html'">Aujourd'hui</div>
+    <div class="button" onclick="window.location.href='archive.html'">Archive</div>
+    <div class="button" onclick="window.location.href='visitors.html'">Visiteurs</div>
+    <div class="button" id="admin-access-button" onclick="window.location.href='admin-panel.html'">Access Admin Panel</div>
+    <div id="admin-logout-button" class="button" onclick="logoutAdmin()">Logout Admin</div>
+  </div>
+
+  <script>
+    console.log('Current startTime:', localStorage.getItem('startTime'));
+    console.log('Current contentList:', localStorage.getItem('contentList'));
+
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    
+    if (!isAdmin) {
+      const username = localStorage.getItem('username');
+      const lastAccessDate = localStorage.getItem('lastAccessDate');
+      const today = new Date().toDateString();
+      if (!username || lastAccessDate !== today) {
+        window.location.href = 'login.html';
+      }
+    }
+
+    const todayButton = document.getElementById('today-button');
+    if (document.referrer.includes('archive.html')) {
+      todayButton.style.display = 'none';
+    }
+
+    const adminLogoutButton = document.getElementById('admin-logout-button');
+    const adminAccessButton = document.getElementById('admin-access-button');
+    const timerDisplay = document.getElementById('timer');
+    
+    if (isAdmin) {
+      adminLogoutButton.style.display = 'block';
+      adminAccessButton.style.display = 'block';
+      timerDisplay.style.display = 'none'; // Hide timer for admins
+    } else {
+      adminLogoutButton.style.display = 'none';
+      adminAccessButton.style.display = 'none';
+      initializeTimer();
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('username');
+      localStorage.removeItem('lastAccessDate');
+      window.location.href = 'login.html';
+    }
+
+    function initializeTimer() {
+      const timerDuration = 5 * 60 * 1000;
+      
+      function updateTimer() {
+        const currentTime = new Date().getTime();
+        const startTime = parseInt(localStorage.getItem('startTime'), 10);
+        const endTime = startTime + timerDuration;
+        const remainingTime = endTime - currentTime;
+        
+        console.log('Current Time:', currentTime);
+        console.log('Start Time:', startTime);
+        console.log('Remaining Time:', remainingTime);
+
+        if (remainingTime <= 0) {
+          blockAccess();
+          return;
+        }
+
+        const minutes = Math.floor(remainingTime / (1000 * 60));
+        const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        setTimeout(updateTimer, 1000);
+      }
+
+      if (!localStorage.getItem('startTime')) {
+        console.log('Setting initial startTime');
+        localStorage.setItem('startTime', new Date().getTime());
+      } else {
+        console.log('Existing startTime found');
+      }
+      
+      updateTimer();
+    }
+
+    function blockAccess() {
+      if (!isAdmin) {
+        document.body.innerHTML = `
+          <div style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #00FF55;
+            text-align: center;
+          ">
+            <h1 style="font-size: 2rem; margin-bottom: 2rem;">Votre temps est écoulé.</h1>
+            <a href="subscribe.html" style="color: #00FF55; text-decoration: underline; font-size: 1rem;">
+              Recevoir une notification par email lors de la prochaine mise à jour
+            </a>
+          </div>
+        `;
+        sessionStorage.setItem('blocked', 'true');
+      }
+    }
+  </script>
+</body>
+</html>

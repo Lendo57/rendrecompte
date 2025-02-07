@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .input-field, .textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: black;
+      color: #00FF55;
+      border: 2px solid #00FF55;
+    }
+    .textarea { height: 200px; }
+    .button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: 2px solid #00FF55;
+      background: black;
+      color: #00FF55;
+      cursor: pointer;
+    }
+    .button:hover {
+      background: #00FF55;
+      color: black;
+    }
+    #imagePreview {
+      max-width: 300px;
+      margin: 20px auto;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Panel</h1>
+    <input type="text" id="title" class="input-field" placeholder="Title">
+    <input type="text" id="subtitle" class="input-field" placeholder="Subtitle">
+    <input type="file" id="imageInput" class="input-field" accept="image/*" onchange="previewImage()">
+    <img id="imagePreview" src="" alt="Preview">
+    <textarea id="bodyText" class="textarea" placeholder="Content..."></textarea>
+    <button class="button" onclick="publish()">Publish</button>
+    <button class="button" onclick="window.location.href='index.html'">Return</button>
+    <button class="button" onclick="logout()">Logout</button>
+  </div>
+  <script>
+    if (localStorage.getItem('isAdmin') !== 'true') {
+      window.location.href = 'login.html';
+    }
+    function previewImage() {
+      const input = document.getElementById('imageInput');
+      const preview = document.getElementById('imagePreview');
+      
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function compressImage(src, callback, maxWidth = 1600, maxHeight = 1200, quality = 0.85) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Calculate scaling while maintaining aspect ratio
+        const aspectRatio = width / height;
+        
+        if (width > maxWidth || height > maxHeight) {
+          if (width / height > maxWidth / maxHeight) {
+            // Image is wider relative to max dimensions
+            width = maxWidth;
+            height = width / aspectRatio;
+          } else {
+            // Image is taller relative to max dimensions
+            height = maxHeight;
+            width = height * aspectRatio;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // High-quality JPEG compression
+        callback(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = src;
+    }
+    function publish() {
+      const title = document.getElementById('title').value;
+      const subtitle = document.getElementById('subtitle').value;
+      const bodyText = document.getElementById('bodyText').value;
+      const imageInput = document.getElementById('imageInput');
+      
+      if (!title || !bodyText) {
+        alert('Title and content required');
+        return;
+      }
+      
+      const content = {
+        title,
+        subtitle,
+        content: bodyText,
+        image: null,
+        date: new Date().toLocaleDateString()
+      };
+      
+      if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          // Compress image
+          compressImage(e.target.result, (compressedImage) => {
+            content.image = compressedImage;
+            saveContentAndRedirect(content);
+          });
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        saveContentAndRedirect(content);
+      }
+    }
+    
+    function saveContentAndRedirect(content) {
+      let contentList = JSON.parse(localStorage.getItem('contentList')) || [];
+      contentList.unshift(content);
+      
+      // Limit to 10 most recent items
+      if (contentList.length > 10) {
+        contentList = contentList.slice(0, 10);
+      }
+      
+      localStorage.setItem('contentList', JSON.stringify(contentList));
+      localStorage.setItem('startTime', new Date().getTime());
+      
+      window.location.href = 'index.html';
+    }
+    
+    function logout() {
+      localStorage.removeItem('isAdmin');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
