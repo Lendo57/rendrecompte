@@ -28,6 +28,31 @@ h1 {
   word-wrap: break-word;
   padding: 0 20px;
 }
+/* Add to your CSS */
+.title-link {
+  text-decoration: none;
+  color: #00FF55;
+  position: relative;
+  cursor: pointer;
+}
+.title-link::after {
+  content: "Retour";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  border: 1px solid #00FF55;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.title-link:hover::after {
+  opacity: 1;
+}
 /* Timer */
 .timer {
   font-size: 2rem;
