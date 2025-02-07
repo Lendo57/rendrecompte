@@ -94,8 +94,7 @@ h1 {
 }
 .visitor-item:last-child {
   border-bottom: none;
-}
-.nav-arrow {
+}.nav-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -108,15 +107,19 @@ h1 {
   z-index: 2;
 }
 
-.nav-prev {
-  left: -40px;
+.nav-prev { 
+  left: -40px; 
 }
 
-.nav-next {
-  right: -40px;
+.nav-next { 
+  right: -40px; 
 }
 
 @media (max-width: 768px) {
-  .nav-prev { left: -20px; }
-  .nav-next { right: -20px; }
+  .nav-prev { 
+    left: -30px; 
+  }
+  .nav-next { 
+    right: -30px; 
+  }
 }
