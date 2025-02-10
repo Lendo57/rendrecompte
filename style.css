@@ -94,7 +94,8 @@ h1 {
 }
 .visitor-item:last-child {
   border-bottom: none;
-}.nav-arrow {
+}
+.nav-arrow {
  position: absolute;
  top: 50%;
  transform: translateY(-50%);
