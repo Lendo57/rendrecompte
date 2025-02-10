@@ -95,31 +95,31 @@ h1 {
 .visitor-item:last-child {
   border-bottom: none;
 }.nav-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 2rem;
-  color: #00FF55;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 10px;
-  z-index: 2;
+ position: absolute;
+ top: 50%;
+ transform: translateY(-50%);
+ font-size: 2rem;
+ color: #00FF55;
+ cursor: pointer;
+ background: none;
+ border: none;
+ padding: 10px;
+ z-index: 2;
 }
 
 .nav-prev { 
-  left: -40px; 
+ left: -60px; 
 }
 
 .nav-next { 
-  right: -40px; 
+ right: -60px; 
 }
 
 @media (max-width: 768px) {
-  .nav-prev { 
-    left: -30px; 
-  }
-  .nav-next { 
-    right: -30px; 
-  }
+ .nav-prev { 
+   left: -45px; 
+ }
+ .nav-next { 
+   right: -45px; 
+ }
 }
