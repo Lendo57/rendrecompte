@@ -82,8 +82,12 @@
       opacity: 0.8;
     }
 
-    .nav-prev { left: 0; }
-    .nav-next { right: 0; }
+    .nav-prev { 
+      left: -100px; 
+    }
+    .nav-next { 
+      right: -100px; 
+    }
 
     .selected-post {
       position: fixed;
@@ -164,6 +168,13 @@
         font-size: 1.5rem;
       }
 
+      .nav-prev { 
+        left: -45px; 
+      }
+      .nav-next { 
+        right: -45px; 
+      }
+
       h1 {
         font-size: 1.8rem;
       }
@@ -172,7 +183,7 @@
 </head>
 <body>
   <div class="container">
-<h1><a href="index.html" class="title-link">Archive</a></h1>
+    <h1><a href="index.html" class="title-link">Archive</a></h1>
     <div class="archive-container">
       <button class="nav-arrow nav-prev" onclick="prevPage()">←</button>
       <button class="nav-arrow nav-next" onclick="nextPage()">→</button>
