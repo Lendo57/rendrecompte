@@ -6,6 +6,33 @@
   <title>Archive</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    .title-link {
+      text-decoration: none;
+      color: #00FF55;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .title-link::after {
+      content: "Retour";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: black;
+      border: 1px solid #00FF55;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .title-link:hover::after {
+      opacity: 1;
+    }
+
     .container {
       min-height: 100vh;
       padding: 20px;
@@ -13,15 +40,20 @@
 
     .archive-container {
       position: relative;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
     }
 
     .archive-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 15px;
-      padding: 10px 40px;
+      padding: 10px;
+      width: 1200px;
     }
 
     .post-tile {
@@ -66,9 +98,7 @@
     }
 
     .nav-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
+      position: static;
       font-size: 2rem;
       color: #00FF55;
       cursor: pointer;
@@ -80,13 +110,6 @@
 
     .nav-arrow:hover {
       opacity: 0.8;
-    }
-
-    .nav-prev { 
-      left: -100px; 
-    }
-    .nav-next { 
-      right: -100px; 
     }
 
     .selected-post {
@@ -147,8 +170,13 @@
     }
 
     @media (max-width: 768px) {
+      .archive-container {
+        gap: 20px;
+      }
+
       .archive-grid {
         grid-template-columns: 1fr;
+        width: 100%;
         padding: 10px 20px;
       }
 
@@ -168,13 +196,6 @@
         font-size: 1.5rem;
       }
 
-      .nav-prev { 
-        left: -45px; 
-      }
-      .nav-next { 
-        right: -45px; 
-      }
-
       h1 {
         font-size: 1.8rem;
       }
@@ -186,8 +207,8 @@
     <h1><a href="index.html" class="title-link">Archive</a></h1>
     <div class="archive-container">
       <button class="nav-arrow nav-prev" onclick="prevPage()">←</button>
-      <button class="nav-arrow nav-next" onclick="nextPage()">→</button>
       <div id="archive-grid" class="archive-grid"></div>
+      <button class="nav-arrow nav-next" onclick="nextPage()">→</button>
     </div>
   </div>
 
