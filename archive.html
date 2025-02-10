@@ -50,24 +50,25 @@
     }
 
     .archive-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-rows: repeat(2, 250px);
-      gap: 30px;
-      padding: 10px;
-      width: 1200px;
-      min-height: 530px;
-    }
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 300px;  /* Larger tiles */
+  row-gap: 60px;         /* Bigger gap between rows */
+  column-gap: 30px;      /* Gap between columns */
+  padding: 10px;
+  width: 1200px;
+  min-height: 660px;    /* Adjusted for new size */
+}
 
-    .post-tile {
-      border: 1px solid #00FF55;
-      padding: 10px;
-      cursor: pointer;
-      transition: transform 0.2s;
-      min-height: 250px;
-      display: flex;
-      flex-direction: column;
-    }
+.post-tile {
+  border: 1px solid #00FF55;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  height: 300px;        /* Match grid-auto-rows */
+  display: flex;
+  flex-direction: column;
+}
 
     .post-tile:hover {
       transform: translateY(-3px);
