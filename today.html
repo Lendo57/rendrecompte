@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aujourd'hui</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     .content-item {
       margin-bottom: 40px;
@@ -34,14 +34,43 @@
     .content-item h2 {
       margin: 10px 0;
     }
+
+    .acquire-button {
+      display: block;
+      width: 200px;
+      margin: 40px auto;
+      padding: 15px;
+      background: none;
+      border: 2px solid #00FF55;
+      color: #00FF55;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .acquire-button:hover {
+      background: #00FF55;
+      color: black;
+    }
+
+    .signature-container {
+      position: relative;
+      width: 100%;
+      padding: 20px;
+      text-align: right;
+      color: #00FF55;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-<h1><a href="index.html" class="title-link">Aujourd'hui</a></h1>
+    <h1><a href="index.html" class="title-link">Aujourd'hui</a></h1>
     <div id="content-list"></div>
   </div>
+
   <script>
+    let editionCounter = parseInt(localStorage.getItem('editionCounter')) || 0;
+
     function displayContent() {
       const contentList = JSON.parse(localStorage.getItem('contentList')) || [];
       const contentContainer = document.getElementById('content-list');
@@ -50,6 +79,7 @@
         contentContainer.innerHTML = '<p>No content available.</p>';
         return;
       }
+
       const post = contentList[0];
       contentContainer.innerHTML = `
         <div class="content-item">
@@ -62,9 +92,50 @@
           <h2>${post.title}</h2>
           ${post.subtitle ? `<h3>${post.subtitle}</h3>` : ''}
           <p>${post.content}</p>
+          <div class="signature-container">
+            <!-- Signature will be added here during capture -->
+          </div>
+          <button class="acquire-button" onclick="captureContent()">Acquérir</button>
         </div>
       `;
     }
+
+    async function captureContent() {
+      // Increment counter
+      editionCounter++;
+      localStorage.setItem('editionCounter', editionCounter);
+
+      // Get the content element
+      const contentItem = document.querySelector('.content-item');
+      
+      // Add edition number to signature container
+      const signatureContainer = document.querySelector('.signature-container');
+      signatureContainer.innerHTML = `Edition No. ${editionCounter}`;
+
+      try {
+        // Capture the content
+        const canvas = await html2canvas(contentItem, {
+          backgroundColor: 'black',
+          scale: 2, // Higher quality
+          logging: false,
+          useCORS: true
+        });
+
+        // Convert to JPG and download
+        const image = canvas.toDataURL('image/jpeg', 0.95);
+        const link = document.createElement('a');
+        link.download = `post_edition_${editionCounter}.jpg`;
+        link.href = image;
+        link.click();
+
+        // Clear the signature container after capture
+        signatureContainer.innerHTML = '';
+      } catch (error) {
+        console.error('Error capturing content:', error);
+        alert('Error creating image. Please try again.');
+      }
+    }
+
     window.onload = displayContent;
   </script>
 </body>
