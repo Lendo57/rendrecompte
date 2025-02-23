@@ -58,7 +58,16 @@
       width: 100%;
       padding: 20px;
       text-align: right;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
       color: #00FF55;
+    }
+
+    .signature-img {
+      height: 40px;
+      width: auto;
     }
   </style>
 </head>
@@ -92,9 +101,7 @@
           <h2>${post.title}</h2>
           ${post.subtitle ? `<h3>${post.subtitle}</h3>` : ''}
           <p>${post.content}</p>
-          <div class="signature-container">
-            <!-- Signature will be added here during capture -->
-          </div>
+          <div class="signature-container"></div>
           <button class="acquire-button" onclick="captureContent()">Acquérir</button>
         </div>
       `;
@@ -105,18 +112,25 @@
       editionCounter++;
       localStorage.setItem('editionCounter', editionCounter);
 
-      // Get the content element
+      // Get elements
       const contentItem = document.querySelector('.content-item');
-      
-      // Add edition number to signature container
+      const acquireButton = document.querySelector('.acquire-button');
       const signatureContainer = document.querySelector('.signature-container');
-      signatureContainer.innerHTML = `Edition No. ${editionCounter}`;
+
+      // Hide button for capture
+      acquireButton.style.display = 'none';
+
+      // Add signature and number
+      signatureContainer.innerHTML = `
+        <img src="signature.png" class="signature-img" alt="signature">
+        <span>No. ${editionCounter}</span>
+      `;
 
       try {
         // Capture the content
         const canvas = await html2canvas(contentItem, {
           backgroundColor: 'black',
-          scale: 2, // Higher quality
+          scale: 2,
           logging: false,
           useCORS: true
         });
@@ -128,11 +142,14 @@
         link.href = image;
         link.click();
 
-        // Clear the signature container after capture
+        // Clear signature and show button again
         signatureContainer.innerHTML = '';
+        acquireButton.style.display = 'block';
       } catch (error) {
         console.error('Error capturing content:', error);
         alert('Error creating image. Please try again.');
+        // Make sure button is shown even if there's an error
+        acquireButton.style.display = 'block';
       }
     }
 
