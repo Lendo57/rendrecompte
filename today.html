@@ -7,44 +7,27 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
+    /* Override body styles */
+    body {
+      display: block !important;
+      height: auto !important;
+      padding: 20px 0 !important;
+    }
+
     .container {
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
+      padding-top: 40px;
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 40px;
+      position: fixed;
+      top: 20px;
+      left: 0;
+      right: 0;
+      z-index: 100;
     }
 
-    .title-link {
-      text-decoration: none;
-      color: #00FF55;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .title-link::after {
-      content: "Retour";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: black;
-      border: 1px solid #00FF55;
-      padding: 5px 10px;
-      font-size: 0.8rem;
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .title-link:hover::after {
-      opacity: 1;
-    }
-
+    /* Rest of your styles */
     .content-item {
       margin-bottom: 40px;
       text-align: left;
@@ -122,8 +105,8 @@
   </style>
 </head>
 <body>
+  <h1><a href="index.html" class="title-link">Aujourd'hui</a></h1>
   <div class="container">
-    <h1><a href="index.html" class="title-link">Aujourd'hui</a></h1>
     <div id="content-list"></div>
   </div>
 
